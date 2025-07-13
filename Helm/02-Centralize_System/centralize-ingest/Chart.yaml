@@ -1,0 +1,9 @@
+apiVersion: v2
+name: centralize-ingest
+description: MPT Insight Projects - Centralize Ingestion System
+
+type: application
+
+version: 1.0.0
+
+appVersion: "1.0.0"

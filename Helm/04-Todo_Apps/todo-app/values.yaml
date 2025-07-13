@@ -1,0 +1,52 @@
+replicaCount: 1
+
+deployment:
+  image:
+    repository: registry.gitlab.com/eingsomnia/my-projects
+    pullPolicy: Always
+    tag: "main"
+
+imagePullSecrets:
+  - name: gitlab-registry
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+containerPort: 8585
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8585
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8585
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

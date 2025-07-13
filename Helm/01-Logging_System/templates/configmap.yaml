@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentbit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Log_Level info
+        Config_Check true
+
+    [INPUT]
+        Name              tail
+        Path              /mnt/logs/Recovery/*.csv
+        Tag               csv.log
+        Read_from_Head    true
+        Refresh_Interval  5
+        Key               message
+
+    # [OUTPUT]
+    #     Name              http
+    #     Match             csv.log
+    #     Host              vector.demo-logging.svc.cluster.local
+    #     Port              8686
+    #     Format            json_lines
+    #     Header            Content-Type application/json
+    
+    [OUTPUT]
+        Name                stdout
+        Match               *
+        Format              json_lines

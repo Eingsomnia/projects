@@ -1,0 +1,76 @@
+---
+# Source: clickhouse-datacon/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clickhouse-datacon-config
+  namespace: mpt-microservice
+data:
+  CLICKHOUSE_URL: http://10.15.1.195:18123
+---
+# Source: clickhouse-datacon/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-datacon
+  namespace: mpt-microservice
+  labels:
+    helm.sh/chart: clickhouse-datacon-1.0.0
+    app.kubernetes.io/name: clickhouse-datacon
+    app.kubernetes.io/instance: clickhouse-datacon
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8124
+      targetPort: 4000
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: clickhouse-datacon
+    app.kubernetes.io/instance: clickhouse-datacon
+---
+# Source: clickhouse-datacon/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse-datacon
+  namespace: mpt-microservice
+  labels:
+    helm.sh/chart: clickhouse-datacon-1.0.0
+    app.kubernetes.io/name: clickhouse-datacon
+    app.kubernetes.io/instance: clickhouse-datacon
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: clickhouse-datacon
+      app.kubernetes.io/instance: clickhouse-datacon
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: clickhouse-datacon-1.0.0
+        app.kubernetes.io/name: clickhouse-datacon
+        app.kubernetes.io/instance: clickhouse-datacon
+        app.kubernetes.io/version: "1.0.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      imagePullSecrets:
+        - name: gitlab
+      serviceAccountName: default
+      containers:
+        - name: clickhouse-datacon
+          envFrom:
+            - configMapRef:
+                name: clickhouse-datacon-config
+            - secretRef:
+                name: clickhouse-datacon-secret
+          image: "registry.gitlab.com/storemesh/big-project/mpt/mpt-insight/91-mpt-insight-microservice:staging"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP

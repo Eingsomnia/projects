@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: watcher-config
+  namespace: mpt-centralize-ingest
+data:
+  config.yaml: |
+    watch_paths:
+      # A502 Line
+
+      # DSSM_416
+      # Target Path
+      - path: /mnt/dssm-416/Backend/Output/SAFIFO
+        files:
+        #Params File (XML)
+          - pattern: "backendmachine*.xml"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/params/dssa/xml/DSSM_416"
+        #SA_Response
+          - pattern: "*saresponse*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/file/dssa/sa_response/DSSM_416/csv"
+        #SA_FIFOLog
+          - pattern: "fifolog*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/file/dssa/sa_fifo/DSSM_416/csv"
+
+      # DSSM_417
+      # Target Path
+      - path: /mnt/dssm-417/Backend/Output/SAFIFO
+        files:
+        #Params File (XML)
+          - pattern: "backendmachine.xml"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/params/dssa/xml/DSSM_417"
+        #SA_Response
+          - pattern: "*saresponse*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/file/dssa/sa_response/DSSM_417/csv"
+        #SA_FIFOLog
+          - pattern: "fifolog*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/file/dssa/sa_fifo/DSSM_417/csv"

@@ -1,0 +1,23 @@
+stages:
+  - build
+
+variables:
+  DOCKER_VERSION: "28.0"
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: "tcp://docker:2375"
+  DOCKER_IMAGE_BASE: "$CI_REGISTRY_IMAGE"
+  DOCKER_TAG: "$CI_COMMIT_REF_SLUG"
+
+.build_template: &build_template
+  stage: build
+  image: docker:$DOCKER_VERSION
+  services:
+    - docker:$DOCKER_VERSION-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+
+buildAndPush:
+  <<: *build_template
+  script:
+    - docker build --platform=linux/amd64 -t "$DOCKER_IMAGE_BASE:$DOCKER_TAG" -f "Dockerfile" .
+    - docker push "$DOCKER_IMAGE_BASE:$DOCKER_TAG"

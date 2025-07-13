@@ -1,0 +1,9 @@
+all:
+  hosts:
+    gpu_server:
+      ansible_host: 10.16.2.10
+      ansible_user: stoadmin1
+  children:
+    gpu_servers:
+      hosts:
+        gpu_server:

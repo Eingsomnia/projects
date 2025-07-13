@@ -1,0 +1,8 @@
+---
+- name: Daily check GPU containers (status + logs)
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - gpu_server_check

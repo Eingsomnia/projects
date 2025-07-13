@@ -1,0 +1,102 @@
+---
+# Source: logging-system/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush        10
+        Daemon       off
+        Log_Level    info
+
+    [INPUT]
+        Name              tail
+        Path              /mnt/logs/Recovery/*.csv
+        Tag               my_csv
+        Read_from_Head    True
+        Refresh_Interval  5
+        Skip_Long_Lines   On
+
+    [OUTPUT]
+        Name    stdout
+        Match   *
+        Format  json_lines
+---
+# Source: logging-system/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentbit
+  labels:
+    helm.sh/chart: logging-system-0.1.0
+    app.kubernetes.io/name: fluentbit
+    app.kubernetes.io/instance: mock-chart
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 2020
+      targetPort: 2020
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: fluentbit
+    app.kubernetes.io/instance: mock-chart
+---
+# Source: logging-system/templates/deployment.yaml
+#Fluent Bit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentbit
+  labels:
+    helm.sh/chart: logging-system-0.1.0
+    app.kubernetes.io/name: fluentbit
+    app.kubernetes.io/instance: mock-chart
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fluentbit
+      app.kubernetes.io/instance: mock-chart
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: logging-system-0.1.0
+        app.kubernetes.io/name: fluentbit
+        app.kubernetes.io/instance: mock-chart
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: logging-system
+          image: "fluent/fluent-bit:4.0.3-debug"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 2020
+              protocol: TCP
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+              
+            - name: sample-data
+              mountPath: /mnt/logs/Recovery
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: fluent-bit-config
+
+        - name: sample-data
+          hostPath:
+            path: /mnt/logs/Recovery
+            type: DirectoryOrCreate

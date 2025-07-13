@@ -1,0 +1,249 @@
+#DSSM_416 PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-dssm416
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-dssm416
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//dssm_416/C"
+
+---
+
+#DSSM_416 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-dssm416
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-dssm416
+  storageClassName: ""
+
+---
+
+#DSSM_417 PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-dssm417
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-dssm417
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//dssm_417/C"
+
+---
+
+#DSSM_417 PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-dssm417
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-dssm417
+  storageClassName: ""
+  
+---
+
+#UFS_060_AL PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-ufs060
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-ufs060
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//UFS_060_AL/C"
+
+---
+
+#UFS_060_AL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-ufs060
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-ufs060
+  storageClassName: ""
+
+---
+
+#UFS_070_AL PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-ufs070
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-ufs070
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//UFS_070_AL/C"
+
+---
+
+#UFS_070_AL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-ufs070
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-ufs070
+  storageClassName: ""
+
+---
+
+#UFS_338_AL PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-ufs338
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-ufs338
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//UFS_338_AL/C"
+
+---
+
+#UFS_338_AL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-ufs338
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-ufs338
+  storageClassName: ""
+
+---
+
+#UFS_382_AL PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-pv-ufs382
+  namespace: mpt-centralize-ingest
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: smb-pv-ufs382
+    readOnly: false
+    nodeStageSecretRef:
+      name: smb-secret
+      namespace: mpt-centralize-ingest
+    volumeAttributes:
+      source: "//UFS_382_AL/C"
+
+---
+
+#UFS_382_AL PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: smb-pvc-ufs382
+  namespace: mpt-centralize-ingest
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: smb-pv-ufs382
+  storageClassName: ""

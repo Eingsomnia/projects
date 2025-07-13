@@ -1,0 +1,55 @@
+# Python cache & compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+*.env
+
+# Virtual environments
+venv/
+.venv/
+.env/
+
+# Secret
+/credentials
+
+# Distribution / Packaging
+dist/
+build/
+*.egg-info/
+*.egg
+*.whl
+
+# Logs, temp, and OS files
+*.log
+*.out
+*.err
+*.pid
+.DS_Store
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+*.ipynb filter=strip-notebook-metadata
+
+# Data files & model weights
+#data/
+datasets/
+#*.csv
+#*.json
+*.parquet
+models/
+checkpoints/
+*.h5
+*.pt
+*.ckpt
+logs/
+tb_logs/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# Output things
+output/

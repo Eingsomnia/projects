@@ -1,0 +1,58 @@
+🔍 Logs from Node: gpu_server
+📅 2025-07-11-09-12-43
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 naughty_brattain
+2025/05/07 09:08:23 INFO Initializing system entities of type 'CPU Core'
+2025/05/07 09:08:23 INFO Not collecting CPU Core metrics; error retrieving DCGM CPU hierarchy: This request is serviced by a module of DCGM that is not currently loaded
+2025/05/07 09:08:23 INFO Starting webserver
+2025/05/07 09:08:23 INFO Listening on address=[::]:9400
+2025/05/07 09:08:23 INFO TLS is disabled. http2=false address=[::]:9400
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 nvidia_smi_exporter
+time=2025-04-10T06:57:58.543Z level=INFO source=tls_config.go:350 msg="TLS is disabled." http2=false address=[::]:9835
+time=2025-04-30T07:47:07.821Z level=INFO source=tls_config.go:347 msg="Listening on" address=[::]:9835
+time=2025-04-30T07:47:07.822Z level=INFO source=tls_config.go:350 msg="TLS is disabled." http2=false address=[::]:9835
+time=2025-04-30T07:51:19.917Z level=INFO source=tls_config.go:347 msg="Listening on" address=[::]:9835
+time=2025-04-30T07:51:19.917Z level=INFO source=tls_config.go:350 msg="TLS is disabled." http2=false address=[::]:9835
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 ollama-1
+[GIN] 2025/07/11 - 02:01:57 | 200 |  141.552697ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:05:58.190Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:05:58 | 200 |  140.633713ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:09:58.946Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:09:59 | 200 |  140.892972ms |       10.45.2.2 | POST     "/api/generate"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 ollama-2
+[GIN] 2025/07/11 - 02:02:57 | 200 |  140.182425ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:06:58.380Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:06:58 | 200 |  140.772973ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:10:59.135Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:10:59 | 200 |  132.152386ms |       10.45.2.2 | POST     "/api/generate"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 ollama-3
+[GIN] 2025/07/11 - 02:03:57 | 200 |  144.357051ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:07:58.569Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:07:58 | 200 |  142.563421ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:11:59.315Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:11:59 | 200 |  140.563746ms |       10.45.2.2 | POST     "/api/generate"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 ollama-4
+[GIN] 2025/07/11 - 02:00:57 | 200 |  139.005117ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:04:57.992Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:04:58 | 200 |  137.632197ms |       10.45.2.2 | POST     "/api/generate"
+time=2025-07-11T02:08:58.759Z level=WARN source=ggml.go:152 msg="key not found" key=general.alignment default=32
+[GIN] 2025/07/11 - 02:08:58 | 200 |  137.932935ms |       10.45.2.2 | POST     "/api/generate"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 work-alive-1
+
+RUN : [2025-07-11T02:11:59.210266]
+Keep-alive request sent: 200
+response time : 0.18867921829223633s
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📦 work-balancer-1
+http://ollama-2:11434/api/generate stream : False
+INFO:     10.45.2.3:53712 - "POST /api/generate HTTP/1.1" 200 OK
+gemma3:27b
+http://ollama-3:11434/api/generate stream : False
+INFO:     10.45.2.3:38678 - "POST /api/generate HTTP/1.1" 200 OK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

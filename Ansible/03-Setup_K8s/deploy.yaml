@@ -1,0 +1,30 @@
+- name: Prepare all nodes
+  hosts: all
+  become: true
+  roles:
+    - common
+    - containerd
+
+- name: Configure Load Balancer
+  hosts: loadbalancers
+  become: true
+  roles:
+    - loadbalancer
+
+- name: Initialize Kubernetes Master
+  hosts: masters
+  become: true
+  roles:
+    - setup-master-node
+
+- name: Install Calico CNI
+  hosts: masters
+  become: true
+  roles:
+    - install-calico
+
+- name: Join Worker Nodes
+  hosts: workers
+  become: true
+  roles:
+    - setup-worker-node

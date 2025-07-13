@@ -1,0 +1,40 @@
+stages:
+  - build
+  - promote
+
+variables:
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+  TAG: "$CI_COMMIT_REF_SLUG"
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DEFAULT_PLATFORM: linux/amd64
+
+watchdog_script_build_stage:
+  stage: build
+  image: docker:24
+  services: 
+    - docker:24-dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build --no-cache -t "$IMAGE_NAME:$TAG" .
+    - docker run --rm "$IMAGE_NAME:$TAG" echo "Container built successfully!"
+    - docker push "$IMAGE_NAME:$TAG"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+
+watchdog_script_promote_stage:
+  stage: promote
+  image: docker:24
+  services: [docker:24-dind]
+  when: manual
+  allow_failure: false
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$IMAGE_NAME:$FROM_TAG"
+    - docker tag "$IMAGE_NAME:$FROM_TAG" "$IMAGE_NAME:$TO_TAG"
+    - docker push "$IMAGE_NAME:$TO_TAG"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  variables:
+    FROM_TAG: "staging"
+    TO_TAG: "main"

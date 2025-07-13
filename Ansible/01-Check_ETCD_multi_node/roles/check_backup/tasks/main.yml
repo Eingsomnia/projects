@@ -1,0 +1,6 @@
+---
+- name: Check Latest ETCD Snapshot
+  ansible.builtin.include_tasks: 01-check-latest-snapshot.yaml
+
+- name: Print Result
+  ansible.builtin.include_tasks: 02-result.yaml

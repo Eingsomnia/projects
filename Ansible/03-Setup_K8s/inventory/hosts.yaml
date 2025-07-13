@@ -1,0 +1,33 @@
+all:
+  vars:
+    ansible_user: systemadmin
+    ansible_ssh_private_key_file: ~/.ssh/lab-HA-cluster-key
+    kube_version: "1.29.2"
+    cluster_vip: "192.168.1.100"
+    pod_network_cidr: "192.168.0.0/16"
+
+  children:
+    loadbalancers:
+      hosts:
+        lb-1:
+          ansible_host: 192.168.1.10
+
+    masters:
+      hosts:
+        master-1:
+          ansible_host: 192.168.1.20
+
+    workers:
+      hosts:
+        worker-1:
+          ansible_host: 192.168.1.30
+
+    # new_masters:
+    #   hosts:
+    #     master-2:
+    #       ansible_host: 10.10.10.12
+
+    # new_workers:
+    #   hosts:
+    #     worker-2:
+    #       ansible_host: 10.10.10.22

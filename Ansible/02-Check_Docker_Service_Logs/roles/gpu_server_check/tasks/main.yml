@@ -1,0 +1,6 @@
+---
+- name: check container status
+  ansible.builtin.include_tasks: 01-check-container-status.yaml
+
+- name: check container logs
+  ansible.builtin.include_tasks: 02-check-container.logs.yaml

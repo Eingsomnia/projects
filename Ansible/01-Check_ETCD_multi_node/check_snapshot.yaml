@@ -1,0 +1,7 @@
+- name: Check etcd snapshot on K3s master nodes
+  hosts: all
+  become: true
+  gather_facts: true
+
+  roles:
+    - check_backup

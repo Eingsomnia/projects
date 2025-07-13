@@ -1,0 +1,24 @@
+---
+- name: Install HAProxy
+  ansible.builtin.apt:
+    name: haproxy
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Configure HAProxy for Kubernetes API Load Balancing
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart HAProxy
+  become: true
+
+- name: Ensure HAProxy is enabled and started
+  ansible.builtin.service:
+    name: haproxy
+    state: started
+    enabled: true
+  become: true

@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-watcher-script
+  namespace: mpt-centralize-ingest
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: tlnw-dev-ins-wk8s2
+  imagePullSecrets:
+    - name: gitlab-registry-secret
+  containers:
+    - name: dev-watcher-script
+      image: registry.gitlab.com/chayodom/watcher-script:development
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: config
+          mountPath: /etc/file-watcher
+        - name: smb-dssm416
+          mountPath: /mnt/dssm-416
+        - name: smb-dssm417
+          mountPath: /mnt/dssm-417
+        - name: smb-ufs060
+          mountPath: /mnt/ufs-060
+        - name: smb-ufs070
+          mountPath: /mnt/ufs-070
+        - name: smb-ufs338
+          mountPath: /mnt/ufs-338
+        - name: smb-ufs382
+          mountPath: /mnt/ufs-382
+  volumes:
+    - name: config
+      configMap:
+        name: watcher-config
+    - name: smb-dssm416
+      persistentVolumeClaim:
+        claimName: smb-pvc-dssm416
+    - name: smb-dssm417
+      persistentVolumeClaim:
+        claimName: smb-pvc-dssm417
+    - name: smb-ufs060
+      persistentVolumeClaim:
+        claimName: smb-pvc-ufs060
+    - name: smb-ufs070
+      persistentVolumeClaim:
+        claimName: smb-pvc-ufs070
+    - name: smb-ufs338
+      persistentVolumeClaim:
+        claimName: smb-pvc-ufs338
+    - name: smb-ufs382
+      persistentVolumeClaim:
+        claimName: smb-pvc-ufs382
+  restartPolicy: Always

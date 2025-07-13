@@ -1,0 +1,25 @@
+all:
+  children:
+    dev_cluster:
+      hosts:
+        tlnw-dev-ins-mk8s1:
+          ansible_host: 10.15.1.195
+          ansible_user: stoadmin1
+        tlnw-dev-ins-mk8s2:
+          ansible_host: 10.15.1.196
+          ansible_user: stoadmin1
+        tlnw-dev-ins-mk8s3:
+          ansible_host: 10.15.1.197
+          ansible_user: stoadmin1
+
+    prd_cluster:
+      hosts:
+        tlnw-prd-insm01:
+          ansible_host: 10.16.2.13
+          ansible_user: stoadmin1
+        tlnw-prd-insm02:
+          ansible_host: 10.16.2.14
+          ansible_user: stoadmin1
+        tlnw-prd-insm03:
+          ansible_host: 10.16.2.15
+          ansible_user: stoadmin1

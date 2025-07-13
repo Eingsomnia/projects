@@ -1,0 +1,11 @@
+---
+- name: 📋 Run 'k3s etcd-snapshot ls' to list all snapshots
+  shell: k3s etcd-snapshot ls
+  register: snapshot_list
+  become: true
+  changed_when: false
+
+- name: 🗂 Ensure docs/ directory exists
+  file:
+    path: "{{ playbook_dir }}/../docs"
+    state: directory

@@ -1,0 +1,70 @@
+#Fluent Bit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "logging-system.fullname" . }}
+  labels:
+    {{- include "logging-system.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "logging-system.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "logging-system.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ing-1
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "logging-system.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          args:
+            - -c
+            - /fluent-bit/etc/fluent-bit.conf
+          {{- end }}
+          image: "{{ .Values.image.fluentbit.repository }}:{{ .Values.image.fluentbit.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.fluentbit.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort.fluentbit }}
+              protocol: TCP
+
+          volumeMounts:
+            - name: sample-data
+              mountPath: /mnt/logs/Recovery
+
+            - name: config
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+
+      volumes:
+        - name: sample-data
+          hostPath:
+            path: /mnt/logs/Recovery
+            type: DirectoryOrCreate
+
+        - name: config
+          configMap:
+            name: fluentbit-config

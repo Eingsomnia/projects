@@ -1,0 +1,23 @@
+---
+- name: Check if master already initialized
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: master_joined
+  become: true
+  when:
+  - not master_joined.stat.exists
+  - "'kubelet' not in ansible_facts.services or ansible_facts.services['kubelet'].state != 'running'"
+
+- name: Fetch join command with control-plane flag
+  ansible.builtin.fetch:
+    src: /join-command.sh
+    dest: /tmp/join-command.sh
+    flat: yes
+  delegate_to: "{{ groups['masters'][0] }}"
+  when: not master_joined.stat.exists
+  become: true
+
+- name: Join master node to cluster with control-plane
+  ansible.builtin.command: sh /tmp/join-command.sh
+  when: not master_joined.stat.exists
+  become: true

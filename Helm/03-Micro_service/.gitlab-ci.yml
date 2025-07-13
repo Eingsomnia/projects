@@ -1,0 +1,38 @@
+stages:
+  - build
+  - promote
+
+variables:
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+  TAG: "$CI_COMMIT_REF_SLUG"
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DEFAULT_PLATFORM: linux/amd64
+
+build-stage:
+  stage: build
+  image: docker:24
+  services: 
+    - docker:24-dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build --no-cache -t "$IMAGE_NAME:$TAG" .
+    - docker run -d --name test-microservice -p 4000:4000 registry.gitlab.com/storemesh/big-project/mpt/mpt-insight/91-mpt-insight-microservice:staging
+    - docker ps -a
+    - docker push "$IMAGE_NAME:$TAG"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+
+promote-to-stage:
+  stage: promote
+  image: docker:24
+  services: [docker:24-dind]
+  when: manual
+  allow_failure: false
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$IMAGE_NAME:$FROM_TAG"
+    - docker tag "$IMAGE_NAME:$FROM_TAG" "$IMAGE_NAME:$TO_TAG"
+    - docker push "$IMAGE_NAME:$TO_TAG"
+  variables:
+    FROM_TAG: "staging"
+    TO_TAG: "main"

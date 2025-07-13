@@ -1,0 +1,75 @@
+replicaCount: 1
+
+image:
+  fluentbit:
+    repository: fluent/fluent-bit
+    pullPolicy: IfNotPresent
+    tag: "4.0.3-debug"
+  vector:
+    repository: timberio/vector
+    pullPolicy: IfNotPresent
+    tag: ""
+
+imagePullSecrets: []
+
+nameOverride: "fluentbit"
+fullnameOverride: "fluentbit"
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+containerPort:
+  fluentbit: 2020
+  vector: 6000
+
+service:
+  fluentbit:
+    type: ClusterIP
+    port: 2020
+  vector:
+    type: ClusterIP
+    port: 6000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 2020
+readinessProbe:
+  httpGet:
+    path: /
+    port: 2020
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

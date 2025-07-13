@@ -1,0 +1,32 @@
+---
+- name: 🕒 Set custom timestamp for filename
+  ansible.builtin.set_fact:
+    now: "{{ lookup('pipe', 'date +%F-%H-%M-%S') }}"
+
+- name: 🐳 Get running container status
+  ansible.builtin.shell: >
+    docker ps --format "table {{ '{{' }}.Names{{ '}}' }}\t{{ '{{' }}.Status{{ '}}' }}"
+  register: docker_status
+  changed_when: false
+
+- name: 📁 Ensure ./reports directory exists on control node
+  delegate_to: localhost
+  become: false
+  ansible.builtin.file:
+    path: "./reports"
+    state: directory
+    mode: '0755'
+
+- name: 💾 Save container status to local file
+  delegate_to: localhost
+  become: false
+  copy:
+    dest: "./reports/{{ inventory_hostname }}-status.txt"
+    content: |
+      🖥️ Node: {{ inventory_hostname }}
+      📅 Date: {{ now }}
+
+      📦 Container Status:
+      {% for line in docker_status.stdout_lines %}
+      {{ line }}
+      {% endfor %}

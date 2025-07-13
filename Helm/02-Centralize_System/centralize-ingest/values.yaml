@@ -1,0 +1,85 @@
+replicaCount: 1
+
+image:
+  repository: registry.gitlab.com/chayodom/watcher-script
+  pullPolicy: Always
+  tag: "staging"
+
+imagePullSecrets:
+  - name: centralize-ingest-secret
+
+nameOverride: "mpt-centralize-ingest"
+fullnameOverride: "mpt-centralize-ingest"
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+containerPort: 5254
+
+service:
+  type: ClusterIP
+  port: 5254
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumeMounts:
+  - name: config
+    mountPath: /etc/file-watcher
+  - name: smb-dssm416
+    mountPath: /mnt/dssm-416
+  - name: smb-dssm417
+    mountPath: /mnt/dssm-417
+
+volumes:
+  - name: config
+    configMap:
+      name: watcher-config
+  - name: smb-dssm416
+    persistentVolumeClaim:
+      claimName: smb-pvc-dssm416
+  - name: smb-dssm417
+    persistentVolumeClaim:
+      claimName: smb-pvc-dssm417
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

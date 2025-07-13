@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: watcher-config
+  namespace: mpt-centralize-ingest
+data:
+  config.yaml: |
+    watch_paths:
+
+      ############################# DSSM_416 #############################
+
+      # # XML Params
+      - path: /mnt/dssm-416/Backend
+        files:
+          - pattern: "backendmachine.xml"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/params/dssa/xml/DSSM_416"
+      # CSV Output
+      - path: /mnt/dssm-416/Backend/Output/SAFIFO
+        files:
+        #LineMap
+          - pattern: "*linemap*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/line_map/DSSM_416/csv"
+        #SA_Response
+          - pattern: "*saresponse*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/sa_response/DSSM_416/csv"
+        #SA_FIFOLog
+          - pattern: "fifolog*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/sa_fifo/DSSM_416/csv"
+
+      ############################# DSSM_417 #############################
+
+      # # XML Params
+      # - path: /mnt/dssm-417/Backend
+      #   files:
+      #     - pattern: "backendmachine.xml"
+      #       endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/params/dssa/xml/DSSM_417"
+      # CSV Output
+      - path: /mnt/dssm-417/Backend/Output/SAFIFO
+        files:
+        #LineMap
+          - pattern: "*linemap*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/line_map/DSSM_417/csv"
+        #SA_Response
+          - pattern: "*saresponse*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/sa_response/DSSM_417/csv"
+        #SA_FIFOLog
+          - pattern: "fifolog*.csv"
+            endpoint: "http://ingest-prd-ins.tlnw.magnecomp.com/dssa/sa_fifo/DSSM_417/csv"

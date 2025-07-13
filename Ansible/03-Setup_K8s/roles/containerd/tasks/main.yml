@@ -1,0 +1,26 @@
+- name: Install containerd package
+  ansible.builtin.apt:
+    name: containerd
+    state: present
+    update_cache: true
+  become: true
+
+- name: Generate default containerd config.toml if missing
+  ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+  become: true
+
+- name: Set SystemdCgroup = true in containerd config
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: '^\s*SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+  become: true
+
+- name: Restart containerd
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+    enabled: true
+  become: true

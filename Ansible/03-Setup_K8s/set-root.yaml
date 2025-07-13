@@ -1,0 +1,11 @@
+- name: Ensure passwordless sudo for systemadmin
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure /etc/sudoers.d/systemadmin exists
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/systemadmin
+        content: "systemadmin ALL=(ALL) NOPASSWD: ALL\n"
+        owner: root
+        group: root
+        mode: '0440'

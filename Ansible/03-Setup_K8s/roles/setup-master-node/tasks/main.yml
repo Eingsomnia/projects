@@ -1,0 +1,48 @@
+- name: Check if kubeconfig file exists
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: admin_conf_result
+  become: true
+
+- name: Configure kubectl for systemadmin user
+  shell: |
+    mkdir -p home/systemadmin/.kube
+    cp -i /etc/kubernetes/admin.conf home/systemadmin/.kube/config
+    chown roosystemadmint:systemadmin home/systemadmin/.kube/config
+  args:
+    creates: home/systemadmin/.kube/config
+
+# - name: Wait for .kube directory to be ready
+#   ansible.builtin.wait_for:
+#     path: /home/systemadmin/.kube
+#     state: present
+#     timeout: 5
+#   become: true
+
+- name: Debug .kube dir exists or not
+  ansible.builtin.stat:
+    path: /home/systemadmin/.kube
+  register: kube_dir_stat
+  become: true
+
+- name: 🪪 Copy kubeconfig for systemadmin if available
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/systemadmin/.kube/config
+    remote_src: true
+    owner: systemadmin
+    group: systemadmin
+    mode: '0600'
+  become: true
+  when: admin_conf_result.stat.exists
+
+- name: Wait for Kubernetes API server to become reachable
+  shell: kubectl get nodes
+  environment:
+    KUBECONFIG: /root/.kube/config
+  register: api_status
+  until: api_status.rc == 0
+  retries: 20
+  delay: 10
+  changed_when: false
+  become: true

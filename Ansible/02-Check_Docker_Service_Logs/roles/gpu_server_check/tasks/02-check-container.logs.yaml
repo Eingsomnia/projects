@@ -1,0 +1,65 @@
+---
+- name: 🕒 Set custom timestamp
+  ansible.builtin.set_fact:
+    now: "{{ lookup('pipe', 'date +%F-%H-%M-%S') }}"
+
+- name: 🧾 Define containers to check
+  ansible.builtin.set_fact:
+    containers_to_check:
+      - naughty_brattain
+      - nvidia_smi_exporter
+      - ollama-1
+      - ollama-2
+      - ollama-3
+      - ollama-4
+      - work-alive-1
+      - work-balancer-1
+      # - work-puller-1
+      # - nginx
+      # - work-ollama-1
+      # - great_lederberg
+
+- name: 🧾 Get existing container names
+  ansible.builtin.shell: docker ps -a --format '{{ "{{" }}.Names{{ "}}" }}'
+  register: existing_containers
+  changed_when: false
+
+# - name: 🔍 Get logs from existing containers
+#   ansible.builtin.shell: docker logs {{ item }} --tail 50
+#   loop: "{{ containers_to_check | intersect(existing_containers.stdout_lines) }}"
+#   register: container_logs
+#   changed_when: false
+#   ignore_errors: true
+- name: 🔍 Get logs from existing containers
+  ansible.builtin.shell: docker logs {{ item }} --tail 5 2>&1
+  loop: "{{ containers_to_check | intersect(existing_containers.stdout_lines) }}"
+  register: container_logs
+  changed_when: false
+  ignore_errors: true
+
+- name: 📝 Combine log report
+  ansible.builtin.set_fact:
+    log_report: |
+      🔍 Logs from Node: {{ inventory_hostname }}
+      📅 {{ now }}
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      {% for log in container_logs.results | sort(attribute='item') %}
+      📦 {{ log.item }}
+      {{ log.stdout | default('⚠️ No log or container not found') }}
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      {% endfor %}
+
+- name: 📁 Ensure ./logs directory exists (on control node)
+  delegate_to: localhost
+  become: false
+  ansible.builtin.file:
+    path: "./logs"
+    state: directory
+    mode: '0755'
+
+- name: 💾 Save logs to file on control node
+  delegate_to: localhost
+  become: false
+  ansible.builtin.copy:
+    dest: "./logs/{{ inventory_hostname }}-logs.txt"
+    content: "{{ log_report }}"

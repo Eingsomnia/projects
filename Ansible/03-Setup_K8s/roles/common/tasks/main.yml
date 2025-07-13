@@ -1,0 +1,57 @@
+---
+- name: Ensure swap is off permanently
+  ansible.builtin.command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+  become: true
+
+- name: Comment out swap in /etc/fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*\\s+swap\\s+)'
+    replace: '#\\1'
+  become: true
+
+- name: Enable IP forwarding
+  ansible.builtin.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    sysctl_set: yes
+    reload: yes
+  become: true
+
+- name: Allow iptables to see bridged traffic
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      br_netfilter
+  become: true
+
+- name: Ensure br_netfilter is loaded
+  ansible.builtin.modprobe:
+    name: br_netfilter
+  become: true
+
+- name: Set required sysctl params
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/k8s.conf
+    content: |
+      net.bridge.bridge-nf-call-ip6tables = 1
+      net.bridge.bridge-nf-call-iptables = 1
+  become: true
+
+- name: Apply sysctl params
+  ansible.builtin.command: sysctl --system
+  become: true
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: yes
+  become: true

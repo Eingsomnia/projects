@@ -1,0 +1,22 @@
+---
+- name: Check if node already joined the cluster
+  ansible.builtin.shell: |
+    kubectl get nodes --kubeconfig=/etc/kubernetes/kubelet.conf --no-headers | grep $(hostname)
+  register: joined_check
+  failed_when: false
+  changed_when: false
+  become: true
+
+- name: Copy join command script from master
+  ansible.builtin.fetch:
+    src: /join-command.sh
+    dest: /tmp/join-command.sh
+    flat: yes
+  delegate_to: "{{ groups['masters'][0] }}"
+  become: true
+  when: joined_check.rc != 0
+
+- name: Run kubeadm join
+  ansible.builtin.command: sh /tmp/join-command.sh
+  when: joined_check.rc != 0
+  become: true

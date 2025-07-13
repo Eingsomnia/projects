@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: staging-watcher-script
+  namespace: mpt-centralize-ingest
+spec:
+  imagePullSecrets:
+    - name: gitlab-registry-secret
+  containers:
+    - name: staging-watcher-script
+      image: registry.gitlab.com/chayodom/watcher-script:staging
+      imagePullPolicy: Always
+      volumeMounts:
+        - name: config
+          mountPath: /etc/file-watcher
+        - name: smb-dssm416
+          mountPath: /mnt/dssm-416
+        - name: smb-dssm417
+          mountPath: /mnt/dssm-417
+  volumes:
+    - name: config
+      configMap:
+        name: watcher-config
+    - name: smb-dssm416
+      persistentVolumeClaim:
+        claimName: smb-pvc-dssm416
+    - name: smb-dssm417
+      persistentVolumeClaim:
+        claimName: smb-pvc-dssm417
+  restartPolicy: Always

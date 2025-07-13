@@ -1,0 +1,9 @@
+- name: Add new worker nodes
+  hosts: new_workers
+  roles:
+    - add-worker-node
+
+- name: Add new master nodes
+  hosts: new_masters
+  roles:
+    - add-master-node

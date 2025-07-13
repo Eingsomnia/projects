@@ -1,0 +1,71 @@
+replicaCount: 1
+
+image:
+  repository: registry.gitlab.com/storemesh/big-project/mpt/mpt-insight/91-mpt-insight-microservice
+  pullPolicy: Always
+  tag: "development"
+
+namespace: mpt-microservice
+
+imagePullSecrets:
+  - name: gitlab
+
+nameOverride: "clickhouse-datacon"
+fullnameOverride: "clickhouse-datacon"
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+containerPort: 4000
+
+service:
+  type: ClusterIP
+  port: 8124
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: service-dev-ins.tlnw.magnecomp.com
+      paths:
+        - path: /clickhouse-datacon
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+
+volumeMounts: []
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
