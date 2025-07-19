@@ -18,7 +18,7 @@ Provider credentials and secrets are kept clean using `.gitignore` and environme
 This repo is built as a personal lab for learning:
 - Terraform basics
 - Remote state management
-- AWS provider config
+- AWS provider and Docker Local config
 - `.tfvars` and variable usage
 - `.gitignore` best practices
 
@@ -29,7 +29,6 @@ This repo is built as a personal lab for learning:
 I’m learning Terraform and Infrastructure as Code (IaC), and this project helps me:
 
 - Practice writing clean `.tf` files
-- Avoid committing large files or sensitive data (learned the hard way 😅)
 - Get better at versioning infrastructure in Git
 - Simulate real-world workflows
 
@@ -40,5 +39,5 @@ I’m learning Terraform and Infrastructure as Code (IaC), and this project help
 ### 1. Clone the repo:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/projects.git
+git https://github.com/Eingsomnia/projects.git
 cd projects/Terraform/02-AWS_Web_instance
