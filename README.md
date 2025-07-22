@@ -9,6 +9,7 @@ Each folder is a self-contained lab or learning exercise focused on real-world s
 - 🔧 **Terraform on AWS**: Launch EC2 instances, manage infrastructure as code, practice IaC workflows
 - 🐳 **Docker Projects**: Build and containerize microservices and deploy locally
 - 🔁 **CI/CD Labs**: Practice GitLab pipelines and GitOps patterns
+- 🖥️ **Hypervisor: Create VM's via Proxmox/Hyper-V/VirtualBox and practice Terraform to create VM provider like Proxmox**
 
 ---
 
@@ -24,10 +25,12 @@ This repo is my personal **learning ground** as I level up my DevOps skills.
 
 ## 🧠 Learning Goals
 
-- Master infrastructure-as-code (Terraform , Ansible)
+- Intermediate Unix based skills (Ubuntu Linux, MacOS)
+- Hypervisor (Proxmox VE, Hyper-V, VirtualBox)
+- Practice infrastructure-as-a-code (Terraform, Ansible)
 - Automate deployments (CI/CD)
-- Understand Kubernetes deeply (manifests, Helm, ingress, RBAC, etc.)
-- Learn Git branching, rebasing, squash, and recovery
+- Understand Kubernetes deeply (manifests, Helm, ingress, etc.)
+- Learn Git branching, rebasing, and recovery
 - Practice Bash & Python scripting for automation (On going)
 
 ---
