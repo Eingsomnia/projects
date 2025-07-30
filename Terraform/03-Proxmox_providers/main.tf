@@ -1,5 +1,6 @@
 resource "proxmox_vm_qemu" "vm" {
   for_each    = var.vms
+  
   name        = each.key
   target_node = var.target_node
   clone       = var.template_name
@@ -13,7 +14,7 @@ resource "proxmox_vm_qemu" "vm" {
 
   memory = each.value.memory
 
-  ipconfig0  = "ip=${each.value.ip},gw=${var.gateway}"
+  ipconfig0  = "ip=dhcp,gw=${var.gateway},ip6=dhcp"
   ciuser     = var.ci_user
   cipassword = var.ci_password
   sshkeys    = file(var.ssh_pub_key)

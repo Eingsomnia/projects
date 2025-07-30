@@ -5,6 +5,8 @@ variable "pm_api_token_secret" {}
 variable "template_name" {}
 variable "target_node" {}
 
+variable "gateway" {}
+
 variable "storage_pool" {
   type    = string
   default = "local-lvm"
@@ -19,8 +21,6 @@ variable "disk_size" {
   default = "32G"
 }
 
-variable "gateway" {}
-
 variable "ci_user" {}
 variable "ci_password" {}
 variable "ssh_pub_key" {
@@ -31,7 +31,8 @@ variable "ssh_pub_key" {
 variable "vms" {
   description = "VMs to create"
   type = map(object({
-    ip      = string
+    # ip      = string
+    # gateway = string
     cores   = number
     sockets = number
     memory  = number
