@@ -1,40 +1,10 @@
-variable "pm_api_url" {}
-variable "pm_api_token_id" {}
-variable "pm_api_token_secret" {}
+variable "pm_api_url"          { type = string }
+variable "pm_api_token_id"     { type = string }
+variable "pm_api_token_secret" { type = string }
+variable "pm_tls_insecure"     { type = bool }
 
-variable "template_name" {}
-variable "target_node" {}
+variable "target_node"   { type = string }
+variable "template_name" { type = string }
+variable "storage"       { type = string }
 
-variable "gateway" {}
-
-variable "storage_pool" {
-  type    = string
-  default = "local-lvm"
-}
-
-variable "network_bridge" {
-  type    = string
-  default = "vmbr0"
-}
-variable "disk_size" {
-  type    = string
-  default = "32G"
-}
-
-variable "ci_user" {}
-variable "ci_password" {}
-variable "ssh_pub_key" {
-  type    = string
-  default = "~/.ssh/id_rsa.pub"
-}
-
-variable "vms" {
-  description = "VMs to create"
-  type = map(object({
-    # ip      = string
-    # gateway = string
-    cores   = number
-    sockets = number
-    memory  = number
-  }))
-}
+variable "ssh_key" { type = string }

@@ -1,46 +1,85 @@
-resource "proxmox_vm_qemu" "vm" {
-  for_each    = var.vms
-  
-  name        = each.key
-  target_node = var.target_node
-  clone       = var.template_name
-  full_clone  = true
-  os_type     = "cloud-init"
+# Clickhouse Resources
+resource "proxmox_vm_qemu" "clickhouse" {
+    target_node = var.target_node
+    desc = "Cloudinit Ubuntu"
+    count = 2
+    onboot = true
 
-  cpu {
-    cores   = each.value.cores
-    sockets = each.value.sockets
-  }
+    clone = var.template_name
 
-  memory = each.value.memory
+    agent = 0
+    
+    vmid = 500 + count.index
 
-  ipconfig0  = "ip=dhcp,gw=${var.gateway},ip6=dhcp"
-  ciuser     = var.ci_user
-  cipassword = var.ci_password
-  sshkeys    = file(var.ssh_pub_key)
+    os_type = "cloud-init"
+    cores = 2
+    sockets = 1
+    numa = true
+    vcpus = 0
+    cpu = "host"
+    memory = 2048
+    name = "clickhouse-0${count.index + 1}"
 
-  network {
-    id     = 0
-    model  = "virtio"
-    bridge = var.network_bridge
-  }
+    cloudinit_cdrom_storage = "local-lvm"
+    scsihw   = "virtio-scsi-single" 
+    bootdisk = "scsi0"
 
-  disks {
-    scsi {
-      scsi0 {
-        disk {
-          storage = var.storage_pool
-          size    = var.disk_size
+    disks {
+        scsi {
+            scsi0 {
+                disk {
+                  storage = var.storage
+                  size = 50
+                }
+            }
         }
-      }
     }
 
-    ide {
-      ide2 {
-        cloudinit {
-          storage = var.storage_pool
+    ipconfig0 = "ip=192.168.28.200${count.index + 1}/24,gw=192.168.28.1"
+    ciuser = "systemadmin"
+    nameserver = "clickhouse"
+    sshkeys = var.ssh_key
+}
+
+# Zookeeper Resources
+
+resource "proxmox_vm_qemu" "zookeeper" {
+    target_node = var.target_node
+    desc = "Cloudinit Ubuntu"
+    count = 3
+    onboot = true
+
+    clone = var.template_name
+
+    agent = 0
+
+    vmid = 502 + count.index
+
+    os_type = "cloud-init"
+    cores = 2
+    sockets = 1
+    numa = true
+    vcpus = 0
+    cpu = "host"
+    memory = 4096
+    name = "zookeeper-0${count.index + 1}"
+
+    cloudinit_cdrom_storage = "local-lvm"
+    scsihw   = "virtio-scsi-single" 
+    bootdisk = "scsi0"
+
+    disks {
+        scsi {
+            scsi0 {
+                disk {
+                  storage = var.storage
+                  size = 50
+                }
+            }
         }
-      }
     }
-  }
+
+    ipconfig0 = "ip=192.168.28.202${count.index + 1}/24,gw=192.168.28.1"
+    ciuser = "systemadmin"
+    sshkeys = var.ssh_key
 }
