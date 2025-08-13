@@ -1,0 +1,49 @@
+---
+- name: Ensure keeper data dirs
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "101"
+    group: "101"
+    mode: "0755"
+  loop:
+    - "{{ keeper_data_dir }}"
+    - "{{ keeper_config_dir }}"
+
+- name: Render Keeper config
+  ansible.builtin.template:
+    src: "keeper-config.xml.j2"
+    dest: "{{ keeper_config_dir }}/config.xml"
+    owner: "101"
+    group: "101"
+    mode: "0644"
+
+- name: Run ClickHouse Keeper container
+  community.docker.docker_container:
+    name: clickhouse-keeper
+    image: "{{ keeper_image }}"
+    pull: true
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ cluster_net }}"
+        aliases: ["{{ inventory_hostname }}"]
+    volumes:
+      - "{{ keeper_data_dir }}:{{ keeper_data_dir }}"
+      - "{{ keeper_config_dir }}:/etc/clickhouse-keeper"
+    ports:
+      - "{{ keeper_client_port }}:{{ keeper_client_port }}"
+      - "{{ keeper_raft_port }}:{{ keeper_raft_port }}"
+    command:
+      - "--config-file=/etc/clickhouse-keeper/config.xml"
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "echo ruok | nc -w 2 127.0.0.1 {{ keeper_client_port }} | grep imok"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+- name: Wait for Keeper client port
+  ansible.builtin.wait_for:
+    port: "{{ keeper_client_port }}"
+    host: "127.0.0.1"
+    timeout: 60

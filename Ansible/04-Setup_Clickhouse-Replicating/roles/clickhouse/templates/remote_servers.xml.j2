@@ -1,0 +1,11 @@
+<yandex>
+  <remote_servers>
+    <{{ ch_cluster_name }}>
+      <shard>
+      {% for host in groups['clickhouse'] | sort %}
+        <replica><host>{{ host }}</host><port>{{ ch_native_port }}</port></replica>
+      {% endfor %}
+      </shard>
+    </{{ ch_cluster_name }}>
+  </remote_servers>
+</yandex>

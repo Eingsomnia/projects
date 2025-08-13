@@ -1,0 +1,33 @@
+---
+- name: Ensure DB exists
+  ansible.builtin.uri:
+    url: "http://localhost:{{ ch_http_port }}/?query=CREATE%20DATABASE%20IF%20NOT%20EXISTS%20{{ ch_db }}"
+    method: POST
+    status_code: 200
+
+- name: Create replicated table if not exists (Keeper-backed)
+  vars:
+    ddl: |
+      CREATE TABLE IF NOT EXISTS {{ ch_db }}.{{ ch_table }} (
+        ts DateTime,
+        user_id UInt64,
+        action String
+      )
+      ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/{{ ch_db }}.{{ ch_table }}', '{replica}')
+      PARTITION BY toYYYYMM(ts)
+      ORDER BY (ts, user_id);
+  ansible.builtin.uri:
+    url: "http://localhost:{{ ch_http_port }}/"
+    method: POST
+    body: "query={{ ddl | urlencode }}"
+    status_code: 200
+
+- name: Insert one sample row guarded by marker (idempotent)
+  ansible.builtin.shell: |
+    MARKER="{{ ch_data_dir }}/.sample_insert_done"
+    if [ ! -f "$MARKER" ]; then
+      curl -sS "http://localhost:{{ ch_http_port }}/?query=INSERT%20INTO%20{{ ch_db }}.{{ ch_table }}%20VALUES%20(now(),1,'hello')" >/dev/null
+      touch "$MARKER"
+    fi
+  args: { warn: false }
+  changed_when: false

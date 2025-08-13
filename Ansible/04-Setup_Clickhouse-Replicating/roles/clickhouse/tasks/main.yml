@@ -1,0 +1,56 @@
+- name: Ensure ClickHouse data dir (uid/gid)
+  ansible.builtin.file:
+    path: "{{ ch_data_dir }}"
+    state: directory
+    owner: "{{ ch_owner_uid }}"
+    group: "{{ ch_owner_gid }}"
+    mode: "0755"
+
+- name: Ensure ClickHouse config dirs
+  ansible.builtin.file:
+    path: "{{ ch_conf_dir }}/{{ item }}"
+    state: directory
+    owner: "{{ ch_owner_uid }}"
+    group: "{{ ch_owner_gid }}"
+    mode: "0755"
+  loop: "{{ ch_create_subdirs }}"
+
+- name: Deploy ClickHouse config templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ ch_owner_uid }}"
+    group: "{{ ch_owner_gid }}"
+    mode: "0644"
+  loop: "{{ ch_templates }}"
+  notify: Restart ClickHouse
+
+- name: Run ClickHouse server
+  community.docker.docker_container:
+    name: "{{ ch_container_name }}"
+    image: "{{ ch_image }}"
+    pull: "{{ ch_pull }}"
+    restart_policy: "{{ ch_restart_policy }}"
+    ulimits: "{{ ch_ulimits }}"
+    networks: "{{ ch_networks }}"
+    volumes: "{{ ch_volumes }}"
+    ports: "{{ ch_ports }}"
+    env: "{{ ch_env }}"
+    healthcheck:
+      test: "{{ ch_health_test }}"
+      interval: "{{ ch_health_interval }}"
+      timeout: "{{ ch_health_timeout }}"
+      retries: "{{ ch_health_retries }}"
+      start_period: "{{ ch_health_start_period }}"
+
+- name: Wait for ClickHouse to be healthy
+  ansible.builtin.uri:
+    url: "http://localhost:{{ ch_http_port }}/ping"
+    return_content: true
+  register: ping
+  until: ping.status == 200 and (ping.content | default('')) is search('Ok')
+  retries: 30
+  delay: 10
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

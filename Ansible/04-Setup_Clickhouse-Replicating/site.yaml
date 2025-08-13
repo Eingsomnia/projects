@@ -1,0 +1,24 @@
+---
+- name: Prepare Docker runtime
+  hosts: all
+  become: true
+  roles:
+    - docker
+
+- name: Deploy ClickHouse Keeper ensemble
+  hosts: keepers
+  become: true
+  roles:
+    - keeper
+
+- name: Deploy ClickHouse replicas
+  hosts: clickhouse
+  become: true
+  roles:
+    - clickhouse
+
+- name: Bootstrap replicated DB objects (run once)
+  hosts: clickhouse[0]
+  become: true
+  roles:
+    - clickhouse-init

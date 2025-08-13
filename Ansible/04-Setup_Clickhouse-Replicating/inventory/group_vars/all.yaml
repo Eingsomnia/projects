@@ -1,0 +1,50 @@
+# Docker runtime
+docker_package_state: present
+docker_users: [ "{{ ansible_user }}" ]
+cluster_net: "ch_net"
+
+# Images (pin for repeatability)
+keeper_image: "clickhouse/clickhouse-keeper:24.8"
+clickhouse_image: "clickhouse/clickhouse-server:24.8"
+
+# Keeper settings
+keeper_client_port: 2181
+keeper_raft_port: 9444
+keeper_data_dir: "/var/lib/clickhouse-keeper"
+keeper_config_dir: "/etc/clickhouse-keeper"
+
+# Build keeper raft configuration from inventory
+keeper_servers: |
+  {% for h in groups['keepers']|sort %}
+  <server>
+    <id>{{ hostvars[h].keeper_id }}</id>
+    <hostname>{{ h }}</hostname>
+    <port>{{ keeper_raft_port }}</port>
+  </server>
+  {% endfor %}
+
+# ClickHouse settings
+ch_data_dir: "/var/lib/clickhouse"
+ch_conf_dir: "/etc/clickhouse-server"
+ch_http_port: 8123
+ch_native_port: 9000
+ch_interserver_http_port: 9009
+ch_cluster_name: "cluster_1s_2r"
+ch_shard: "01"
+
+# Demo DB/table
+ch_db: "clickhouse_lab"
+ch_table: "events"
+
+# Users (dev-friendly; lock down in prod; consider Ansible Vault)
+ch_user: "systemadmin"
+ch_password: "qwer1234!@#$"
+
+# ClickHouse owner (matches container UID/GID)
+ch_owner_uid: "101"
+ch_owner_gid: "101"
+
+# Subfolders to create under /etc/clickhouse-server
+ch_create_subdirs:
+  - "config.d"
+  - "users.d"

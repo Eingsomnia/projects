@@ -27,6 +27,14 @@ variable "proxmox_host" {
 #   description = "Target node"
 # }
 
+variable "ciuser" {
+  type = string
+}
+
+variable "cipassword" {
+  type = string
+}
+
 variable "ssh_key" {
   description = "The public SSH key to install on new VMs."
 }

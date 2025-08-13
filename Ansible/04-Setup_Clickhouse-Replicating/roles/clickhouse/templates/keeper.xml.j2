@@ -1,0 +1,7 @@
+<yandex>
+  <zookeeper>
+  {% for h in groups['keepers'] | sort %}
+    <node><host>{{ h }}</host><port>{{ keeper_client_port }}</port></node>
+  {% endfor %}
+  </zookeeper>
+</yandex>

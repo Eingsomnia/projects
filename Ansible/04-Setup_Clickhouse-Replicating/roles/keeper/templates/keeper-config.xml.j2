@@ -1,0 +1,21 @@
+<clickhouse>
+  <keeper_server>
+    <tcp_port>{{ keeper_client_port }}</tcp_port>
+    <server_id>{{ keeper_id }}</server_id>
+
+    <log_storage_path>{{ keeper_data_dir }}/log</log_storage_path>
+    <snapshot_storage_path>{{ keeper_data_dir }}/snapshots</snapshot_storage_path>
+
+    <coordination_settings>
+      <operation_timeout_ms>10000</operation_timeout_ms>
+      <session_timeout_ms>30000</session_timeout_ms>
+      <raft_heart_beat_interval_ms>500</raft_heart_beat_interval_ms>
+      <raft_election_timeout_ms>1000</raft_election_timeout_ms>
+      <raft_snapshot_distance>100000</raft_snapshot_distance>
+    </coordination_settings>
+
+    <raft_configuration>
+      {{ keeper_servers | trim }}
+    </raft_configuration>
+  </keeper_server>
+</clickhouse>

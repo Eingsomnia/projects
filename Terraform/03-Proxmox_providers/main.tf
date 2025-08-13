@@ -32,10 +32,11 @@ resource "proxmox_vm_qemu" "vm" {
     bridge = "vmbr0"
   }
 
-  os_type   = "cloud-init"
-  ciuser    = "systemadmin"
-  ipconfig0 = "ip=${each.value.ip}/24,gw=192.168.28.1"
-  sshkeys   = var.ssh_key
+  os_type    = "cloud-init"
+  ciuser     = var.ciuser
+  cipassword = var.cipassword
+  ipconfig0  = "ip=${each.value.ip}/24,gw=192.168.28.1"
+  sshkeys    = var.ssh_key
 
   agent = 1
   boot  = "order=scsi0;ide0"

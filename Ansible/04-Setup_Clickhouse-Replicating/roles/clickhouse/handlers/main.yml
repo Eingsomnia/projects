@@ -1,0 +1,5 @@
+---
+- name: Restart ClickHouse
+  community.docker.docker_container:
+    name: clickhouse
+    restart: true
